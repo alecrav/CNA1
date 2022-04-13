@@ -14,7 +14,7 @@ host_name = 'localhost'
 if len(sys.argv) > 2:
     port_number = int(sys.argv[2])
 else:
-    port_number = 8083
+    port_number = 8084
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((host_name, port_number))
@@ -29,5 +29,5 @@ while True:
 
 s.send(request.encode('utf-8'))
 reply = s.recv(1024)
-# print('reply:', reply.decode('utf-8'))
+print('reply:', reply.decode('utf-8'))
 s.close()
