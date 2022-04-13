@@ -80,10 +80,17 @@ while True:
         
         if request_entries[0][1] ==  "/home.html":
             # do something
-            conn.send("/" + host + "/home.html")
+            content = 'content'
+            resp = create_response_by_fields(version, '200', 'OK',date,server_name,str(len(content)),content_type,content)
+            resp = bytes(resp, 'utf8')
+            conn.send(resp)
             conn.close()
             continue
-            # error handling
+        else:
+            resp = bytes((version, '404','NOT FOUND'), 'utf8')
+            conn.send(resp)
+            conn.close()
+            continue
         
     elif request_entries[0][0] == "PUT":
         print("PUT request")
