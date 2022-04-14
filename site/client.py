@@ -14,7 +14,7 @@ host_name = 'localhost'
 if len(sys.argv) > 2:
     port_number = int(sys.argv[2])
 else:
-    port_number = 8084
+    port_number = 8082
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((host_name, port_number))
