@@ -56,7 +56,7 @@ def get_content_by_name(host, hosts_sections):
 if len(sys.argv) > 1:
     port_number = int(sys.argv[1])
 else:
-    port_number = 8080
+    port_number = 8090
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -96,18 +96,19 @@ while True:
         
         if request_entries["Method"] == "GET":
             
-            if request_entries["Path"] == hosts_sections[host][0]: # "/home.html"
+            print (request_entries["Path"])
+            if request_entries["Path"] == "/" + hosts_sections[host][0]: # "/home.html"
                 # do something
                 content_type = "text/html"
                 content = 'content'
                 resp = create_response_by_fields(request_entries["Version"],'200','OK',date,server_name,str(len(content)),content_type,content)
-                resp = bytes(resp, 'utf-8')
-                conn.send(resp)
+                conn.send(resp.encode('utf-8'))
                 conn.close()
                 continue
             else:
-                resp = bytes(version+' 404 NOT FOUND', 'utf-8')
-                conn.send(resp)
+                resp = version+' 404 NOT FOUND'
+                # resp = bytes(resp, 'utf-8')  Eventually, another way to encode a string
+                conn.send(resp.encode('utf-8'))
                 conn.close()
                 continue
             
