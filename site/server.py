@@ -6,6 +6,7 @@
 
 import socket
 import sys
+import os
 from urllib import response
 from datetime import datetime
 
@@ -56,7 +57,7 @@ def get_content_by_name(host, hosts_sections):
 if len(sys.argv) > 1:
     port_number = int(sys.argv[1])
 else:
-    port_number = 8090
+    port_number = 8080
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -87,7 +88,7 @@ while True:
     ## Setting default common values    
     date = datetime.now().astimezone().strftime("%a, %d %b %Y %H:%M:%S %Z")
 
-    if len(request_entries) < 2 or (not request_entries["Host"]) or (not request_entries["Version"]):
+    if len(request_entries) < 2 or (not "Host" in request_entries) or (not "Version" in request_entries):
         conn.send(malformed_respones)
     else:
         host = request_entries["Host"]
@@ -96,11 +97,16 @@ while True:
         
         if request_entries["Method"] == "GET":
             
-            print (request_entries["Path"])
             if request_entries["Path"] == "/" + hosts_sections[host][0]: # "/home.html"
+                filename = "site/"+ host +"/"+ hosts_sections[host][0]
+                # filesize = os.path.getsize(filename)
+                # conn.send(f"{filename}{''}{filesize}".encode('utf-8'))
+                file = open(filename, "r")
+                content = file.read()
+                print(content)
                 # do something
                 content_type = "text/html"
-                content = 'content'
+                # content = 'content'
                 resp = create_response_by_fields(request_entries["Version"],'200','OK',date,server_name,str(len(content)),content_type,content)
                 conn.send(resp.encode('utf-8'))
                 conn.close()
