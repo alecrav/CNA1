@@ -44,7 +44,7 @@ def hosts_to_dictionary(a):
     hosts_entries_matrix = string_to_matrix(a,',',False)
     hosts_entries_dictionary = {}
     for i in range(len(hosts_entries_matrix)):
-        hosts_entries_dictionary[hosts_entries_matrix[i][0]] = [hosts_entries_matrix[i][1:4]]
+        hosts_entries_dictionary[hosts_entries_matrix[i][0]] = hosts_entries_matrix[i][1:4]
     return hosts_entries_dictionary
 
 def get_content_by_name(host, hosts_sections):
@@ -56,7 +56,7 @@ def get_content_by_name(host, hosts_sections):
 if len(sys.argv) > 1:
     port_number = int(sys.argv[1])
 else:
-    port_number = 8082
+    port_number = 8080
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -96,17 +96,17 @@ while True:
         
         if request_entries["Method"] == "GET":
             
-            if request_entries[0][1] ==  "/home.html":
+            if request_entries["Path"] == hosts_sections[host][0]: # "/home.html"
                 # do something
                 content_type = "text/html"
                 content = 'content'
                 resp = create_response_by_fields(request_entries["Version"],'200','OK',date,server_name,str(len(content)),content_type,content)
-                resp = bytes(resp, 'utf8')
+                resp = bytes(resp, 'utf-8')
                 conn.send(resp)
                 conn.close()
                 continue
             else:
-                resp = bytes((version, '404','NOT FOUND'), 'utf8')
+                resp = bytes(version+' 404 NOT FOUND', 'utf-8')
                 conn.send(resp)
                 conn.close()
                 continue
@@ -127,7 +127,7 @@ while True:
             resp = create_response_by_fields(version,'200','OK',date,server_name,str(len(content)),content_type,content)
 
             print(resp)
-            resp = bytes(resp, 'utf8')
+            resp = bytes(resp, 'utf-8')
             conn.send(resp)
 
         else:
