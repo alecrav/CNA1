@@ -13,6 +13,9 @@ def create_response_by_fields(version, status, status_code, date, server_name, c
     return version+" "+status+" "+status_code+"\nDate: "+date+"\nServer: "+server_name+"\nContent-Length: "+content_length+"\nContent-Type: "+content_type+"\n\n"+content
 
 def string_to_matrix(a, split_by, request):
+    """
+    
+    """""
     # Split lines and organize matrix of lines
     lines = a.split('\n')
     sections = []
@@ -42,6 +45,7 @@ def request_to_dictionary(a):
         print("Request line "+str(i)+":")
         print(sections_matrix[i])
         print("  ")
+
         value = sections_matrix[i][1]
         value = value.split()[0]
         field = sections_matrix[i][0]
@@ -76,7 +80,7 @@ lines = test.read()
 
 server_name = 'Server: Group ComputerNotWorking Server'
 hosts_sections = hosts_to_dictionary(lines)
-print(hosts_sections["alfiovavassori.ch"][0])
+print(hosts_sections)
 
 not_found_response = b"HTTP/1.1 404 Not Found\r\n\r\n"
 malformed_respones = b"HTTP/1.1 400 Bad Request\r\n\r\n"
