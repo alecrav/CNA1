@@ -57,18 +57,35 @@ a {
 .gifAndDescription {
     display: flex;
     flex-direction: row;
-    height: 100%;
+    height: 33%;
+    align-items: center;
 }
 
 .descriptionAndGif {
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: auto;
+    height: 33%;
+    object-fit: contain;
+    align-items: center;
 }
 
-.description, .gif {
+.description {
     margin:2%;
+    height: 100%;
     width: 100%;
+    align-items: center;
+    object-fit: contain;
 }
 
+.gif {
+    margin:2%;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    object-fit: contain;
+}
+
+.gif img {
+    height: 200px;
+}
