@@ -57,8 +57,14 @@ a {
 .gifAndDescription {
     display: flex;
     flex-direction: row;
+    height: 100%;
+}
+
+.descriptionAndGif {
+    display: flex;
+    flex-direction: row;
     width: 100%;
-    height: 50%;
+    height: auto;
 }
 
 .description, .gif {
