@@ -7,7 +7,6 @@
 import socket
 import sys
 import os
-from urllib import response
 from datetime import datetime
 
 def create_response_by_fields(version, status, status_code, date, server_name, content_length, content_type, content):
@@ -25,6 +24,14 @@ def string_to_matrix(a, split_by, request):
     return sections
 
 def request_to_dictionary(a):
+    """
+    Reorganizes the request in a dictionary where each field name is accessible
+
+    Attributes
+    ----------
+    a : str[][]
+    
+    """
     sections_matrix = string_to_matrix(a,':',True)
     sections_dictionary = {}
     sections_dictionary["Method"] = sections_matrix[0][0]
@@ -64,12 +71,12 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('', port_number))
 s.listen(1)
 
-test = open("./site/vhosts.conf","r")
+test = open("./vhosts.conf","r")
 lines = test.read()
 
 server_name = 'Server: Group ComputerNotWorking Server'
 hosts_sections = hosts_to_dictionary(lines)
-print(hosts_sections)
+print(hosts_sections["alfiovavassori.ch"][0])
 
 not_found_response = b"HTTP/1.1 404 Not Found\r\n\r\n"
 malformed_respones = b"HTTP/1.1 400 Bad Request\r\n\r\n"
@@ -96,15 +103,13 @@ while True:
         ## End of setting default common values
         
         if request_entries["Method"] == "GET":
-            
-            if request_entries["Path"] == "/" + hosts_sections[host][0]: # "/home.html"
-                filename = "site/"+ host +"/"+ hosts_sections[host][0]
+            filename = "./"+ host +"/" + request_entries["Path"]
+            if os.path.exists(filename):
                 # filesize = os.path.getsize(filename)
                 # conn.send(f"{filename}{''}{filesize}".encode('utf-8'))
                 file = open(filename, "r")
                 content = file.read()
                 print(content)
-                # do something
                 content_type = "text/html"
                 # content = 'content'
                 resp = create_response_by_fields(request_entries["Version"],'200','OK',date,server_name,str(len(content)),content_type,content)
@@ -113,17 +118,44 @@ while True:
                 continue
             else:
                 resp = version+' 404 NOT FOUND'
-                # resp = bytes(resp, 'utf-8')  Eventually, another way to encode a string
                 conn.send(resp.encode('utf-8'))
                 conn.close()
                 continue
             
         elif request_entries["Method"] == "PUT":
-            print("PUT request")
+            filename = "./"+ host +"/"+ request_entries["Path"]
+            # hosts_sections[host][0] += request_entries["Path"]
+            if os.path.exists(filename):
+                with open(filename,'w') as file:
+                    file.write("request content")
+            else:
+                file = open(filename, "w+")
+                file.write("request content")
+            # response
+            content = file.read()
+            content_type = "text/html"
+            resp = create_response_by_fields(request_entries["Version"],'200','OK',date,server_name,str(len(content)),content_type,content)
+            conn.send(resp.encode('utf-8'))
+            conn.close()
+            continue
+            
 
         elif request_entries["Method"] == "DELETE":
-            # do something
-            print("DELETE request")
+            filename = "./"+ host +"/"+ request_entries["Path"]
+            if os.path.exists(filename):
+                os.remove(filename)
+                content = """<h1>File deleted</h1>"""
+                content_type = "text/html"
+                resp = create_response_by_fields(request_entries["Version"],'200','OK',date,server_name,str(len(content)),content_type,content)
+                conn.send(resp.encode('utf-8'))
+                conn.close()
+                continue
+
+            else:
+                resp = version+' 404 NOT FOUND'
+                conn.send(resp.encode('utf-8'))
+                conn.close()
+                continue
 
         elif request_entries["Method"] == "NTW22INFO":
             print("NTW22INFO request")
