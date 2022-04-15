@@ -69,7 +69,7 @@ def get_content_by_name(host, hosts_sections):
 if len(sys.argv) > 1:
     port_number = int(sys.argv[1])
 else:
-    port_number = 8083
+    port_number = 8080
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

@@ -11,3 +11,7 @@ The personal sites are not really well tought of and designed, because we wanted
 
 We decided to use Python, because it is simpler to write and understand, and we felt it was the right choice.
 
+TO START:
+
+Go in folder ./ site(where this file is), open a terminal and type 'python3 server.py'
+as optional command line arbument can be selected a port number. Default port is 8080.
