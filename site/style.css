@@ -1,7 +1,7 @@
 /* Style for the site */
 
 body {
-    background-color: #333333;
+    background-color: white;
     font-family: 'SF Pro', 'Arial Narrow', Arial, sans-serif;
     margin: 0;
     display: flex;
@@ -10,7 +10,7 @@ body {
 }
 
 nav {
-    background-color: darkgrey;
+    background-color: white;
     position: top center; 
     text-align: center;
     margin: none;
@@ -18,8 +18,8 @@ nav {
 }
 
 footer {
-    background-color: darkgrey;
-    position:absolute;
+    background-color: white;
+    position:absolute sticky;
     bottom:0px;
     width:100%;
     height: auto;
