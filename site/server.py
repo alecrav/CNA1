@@ -32,8 +32,8 @@ def request_to_dictionary(a):
 
     Attributes
     ----------
-    a : str[][]
-    
+    a : str
+
     """
     sections_matrix = string_to_matrix(a,':',True)
     sections_dictionary = {}
@@ -45,10 +45,11 @@ def request_to_dictionary(a):
         print("Request line "+str(i)+":")
         print(sections_matrix[i])
         print("  ")
-
-        value = sections_matrix[i][1]
-        value = value.split()[0]
-        field = sections_matrix[i][0]
+        j = len(sections_matrix[i])
+        if j >= 2:
+            value = sections_matrix[i][1]
+            value = value.split()[0]
+            field = sections_matrix[i][0]
         sections_dictionary[field] = value # Adding the field to the dictionary
     return sections_dictionary
 
@@ -68,7 +69,7 @@ def get_content_by_name(host, hosts_sections):
 if len(sys.argv) > 1:
     port_number = int(sys.argv[1])
 else:
-    port_number = 8080
+    port_number = 8083
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -82,8 +83,12 @@ server_name = 'Server: Group ComputerNotWorking Server'
 hosts_sections = hosts_to_dictionary(lines)
 print(hosts_sections)
 
-not_found_response = b"HTTP/1.1 404 Not Found\r\n\r\n"
 malformed_respones = b"HTTP/1.1 400 Bad Request\r\n\r\n"
+forbidden_response = b"HTTP/1.1 403 Forbidden\r\n\r\n"
+not_found_response = b"HTTP/1.1 404 Not Found\r\n\r\n"
+not_allowed_response = b"HTTP/1.1 405 Not Allowed\r\n\r\n"
+not_implemented_respones = b"HTTP/1.1 501 Not Implemented\r\n\r\n"
+not_supported_respones = b"505 HTTP Version Not Supported\r\n\r\n"
 
 while True:
     print('Accepting connections')
@@ -104,6 +109,10 @@ while True:
     else:
         host = request_entries["Host"]
         version = request_entries["Version"]
+        if version != "HTTP/1.0" or version != "HTTP/1.1":
+            conn.send(not_supported_respones)
+            continue
+
         ## End of setting default common values
         
         if request_entries["Method"] == "GET":
@@ -132,19 +141,21 @@ while True:
             if os.path.exists(filename):
                 with open(filename,'w') as file:
                     file.write("request content")
+                status_code = '200'
             else:
                 file = open(filename, "w+")
                 file.write("request content")
-            # response
+                status_code = '201'
+                # response
             content = file.read()
             content_type = "text/html"
-            resp = create_response_by_fields(request_entries["Version"],'200','OK',date,server_name,str(len(content)),content_type,content)
+            resp = create_response_by_fields(request_entries["Version"],status_code,'OK',date,server_name,str(len(content)),content_type,content)
             conn.send(resp.encode('utf-8'))
             conn.close()
             continue
             
 
-        elif request_entries["Method"] == "DELETE":
+        elif request_entries["Method"] == "DELETE":           
             filename = "./"+ host +"/"+ request_entries["Path"]
             if os.path.exists(filename):
                 os.remove(filename)
@@ -175,7 +186,7 @@ while True:
 
         else:
             print("Unknown request")
-            conn.send(not_found_response)
+            conn.send(not_implemented_respones)
             # 
 
 
